@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>面试准备进度追踪</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .week-card {
+            transition: transform 0.2s;
+        }
+        .week-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">面试准备进度追踪</h1>
+        
+        <!-- 进度概览 -->
+        <div class="mb-8">
+            <canvas id="progressChart"></canvas>
+        </div>
+
+        <!-- 周计划卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- 第一周 -->
+            <div class="week-card bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">第一周：React 深度强化 + JavaScript 底层</h2>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2"> React Reconciler 源码
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2"> Hooks 系统实现
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2"> 原型链训练
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第二周 -->
+            <div class="week-card bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">第二周：React 生态 + 性能优化</h2>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2"> Next.js vs Remix
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2"> 性能优化实践
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2"> 浏览器原理
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第三周 -->
+            <div class="week-card bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">第三周：架构设计 + 项目包装</h2>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2"> 设计模式实践
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2"> 架构设计文档
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" class="mr-2"> 项目整理与包装
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 进度图表初始化
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['第一周', '第二周', '第三周'],
+                datasets: [{
+                    label: '完成进度',
+                    data: [0, 0, 0],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // 保存进度到 localStorage
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateProgress);
+        });
+
+        function updateProgress() {
+            const weeks = document.querySelectorAll('.week-card');
+            const progressData = [];
+            
+            weeks.forEach(week => {
+                const checkboxes = week.querySelectorAll('input[type="checkbox"]');
+                const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+                const progress = (checked / checkboxes.length) * 100;
+                progressData.push(progress);
+            });
+
+            // 更新图表
+            const chart = Chart.getChart(ctx);
+            chart.data.datasets[0].data = progressData;
+            chart.update();
+        }
+    </script>
+</body>
+</html>
